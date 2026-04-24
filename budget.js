@@ -31,6 +31,31 @@ let balance = 0,
 const DELETE = "delete",
   EDIT = "edit";
 
+function validateInput(titleRaw, amountRaw) {
+  const title = String(titleRaw || "").trim();
+  if (title.length === 0)  return { valid: false, message: "Please enter a title." };
+  if (title.length > 50)   return { valid: false, message: "Title must be 50 characters or fewer." };
+
+  if (amountRaw === "" || amountRaw === null) {
+    return { valid: false, message: "Please enter an amount." };
+  }
+  const amount = Number(amountRaw);
+  if (!Number.isFinite(amount))  return { valid: false, message: "Amount must be a number." };
+  if (amount < 0.01)             return { valid: false, message: "Amount must be greater than zero." };
+  if (amount > 9999999)          return { valid: false, message: "Amount is too large." };
+  if (Math.round(amount * 100) / 100 !== amount) {
+    return { valid: false, message: "Use at most 2 decimal places." };
+  }
+  return { valid: true, title, amount };
+}
+
+function showError(formType, message) {
+  const errEl = document.getElementById(formType + "-error");
+  if (!errEl) return;
+  errEl.textContent = message || "";
+  errEl.hidden = !message;
+}
+
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
 updateUI();
@@ -56,33 +81,25 @@ allBtn.addEventListener("click", function () {
 });
 
 addExpense.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!expenseTitle.value || !expenseAmount.value) return;
-
-  // ADD INPUTs TO ENTRY_LIST
-  let expense = {
-    type: "expense",
-    title: expenseTitle.value,
-    amount: +expenseAmount.value,
-  };
-  ENTRY_LIST.push(expense);
-
+  const result = validateInput(expenseTitle.value, expenseAmount.value);
+  if (!result.valid) {
+    showError("expense", result.message);
+    return;
+  }
+  showError("expense", null);
+  ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
   updateUI();
   clearInput([expenseTitle, expenseAmount]);
 });
 
 addIncome.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!incomeTitle.value || !incomeAmount.value) return;
-
-  // ADD INPUTs TO ENTRY_LIST
-  let income = {
-    type: "income",
-    title: incomeTitle.value,
-    amount: +incomeAmount.value,
-  };
-  ENTRY_LIST.push(income);
-
+  const result = validateInput(incomeTitle.value, incomeAmount.value);
+  if (!result.valid) {
+    showError("income", result.message);
+    return;
+  }
+  showError("income", null);
+  ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
 });

@@ -435,3 +435,10 @@ input[type="number"] {
   background-size: 20px 20px;
   background-repeat: no-repeat;
 }
+
+.field-error {
+  color: #c0392b;
+  font-size: 0.9rem;
+  margin: 8px 20px;
+  font-weight: 600;
+}
