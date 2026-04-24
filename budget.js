@@ -129,9 +129,23 @@ function updateUI() {
   let sign = income >= outcome ? "$" : "-$";
 
   //UPDATE UI
-  balanceEl.innerHTML = `<small>${sign}</small>${balance}`;
-  outcomeTotalEl.innerHTML = `<small>$</small>${outcome}`;
-  incomeTotalEl.innerHTML = `<small>$</small>${income}`;
+  balanceEl.replaceChildren();
+  const balSmall = document.createElement("small");
+  balSmall.textContent = sign;
+  balanceEl.appendChild(balSmall);
+  balanceEl.appendChild(document.createTextNode(String(balance)));
+
+  outcomeTotalEl.replaceChildren();
+  const outSmall = document.createElement("small");
+  outSmall.textContent = "$";
+  outcomeTotalEl.appendChild(outSmall);
+  outcomeTotalEl.appendChild(document.createTextNode(String(outcome)));
+
+  incomeTotalEl.replaceChildren();
+  const incSmall = document.createElement("small");
+  incSmall.textContent = "$";
+  incomeTotalEl.appendChild(incSmall);
+  incomeTotalEl.appendChild(document.createTextNode(String(income)));
 
   clearElement([expenseList, incomeList, allList]);
 
@@ -148,13 +162,30 @@ function updateUI() {
 }
 
 function showEntry(list, type, title, amount, id) {
-  const entry = `<li id="${id}" class="${type}">
-                    <div class="entry">${title} : $${amount}</div>
-                    <div id="edit"></div>
-                    <div id="delete"></div>
-                  </li>`;
-  const position = "afterbegin";
-  list.insertAdjacentHTML(position, entry);
+  const li = document.createElement("li");
+  li.dataset.id = id;                
+  li.className = type;
+
+  const body = document.createElement("div");
+  body.className = "entry";
+  body.textContent = `${title} : $${amount}`;
+  li.appendChild(body);
+
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "edit-btn";
+  editBtn.dataset.action = "edit";     
+  editBtn.setAttribute("aria-label", "Edit entry");
+  li.appendChild(editBtn);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "delete-btn";
+  deleteBtn.dataset.action = "delete";        
+  deleteBtn.setAttribute("aria-label", "Delete entry");
+  li.appendChild(deleteBtn);
+
+  list.insertBefore(li, list.firstChild); 
 }
 
 function clearElement(elements) {
