@@ -1,12 +1,15 @@
 # Budget-App-JavaScript
 
+[![codecov](https://codecov.io/gh/lz233/Budget-app/graph/badge.svg?token=939YI5996C)](https://codecov.io/gh/lz233/Budget-app)
+
 Welcome to the Budget App! This project is the result of following a comprehensive YouTube tutorial that guides you through building a budget management application from scratch. With this app, you can efficiently track your income, expenses, and overall budget, gaining better control of your financial situation.
 
 ## Demo
+
 You can check out the live demo of the Budget App here.
 **Online Demo of Project :**
 
-<a href="https://smircodes.github.io/Budget-app/" title="Budget-App">Link to Budget App</a>
+[Link to Budget App](https://smircodes.github.io/Budget-app/)
 
 ## Features
 
@@ -19,6 +22,7 @@ You can check out the live demo of the Budget App here.
 - Simple and Intuitive Interface: The app boasts a user-friendly interface, making it easy for anyone to navigate and use, even if you have little to no prior experience with budgeting applications.
 
 ## Usage
+
 1. Clone the repository or download the ZIP file.
 
 1. Open the project in your preferred code editor.
@@ -29,7 +33,43 @@ You can check out the live demo of the Budget App here.
 
 1. Monitor your budget regularly and adjust your spending to achieve your financial goals.
 
+## Tests & Coverage (Codecov)
+
+This repo includes a minimal Jest setup and a GitHub Actions workflow that runs tests and uploads coverage to Codecov on every push.
+
+### Run tests locally
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Run tests with coverage:
+
+   ```bash
+   npm test
+   # or
+   npx jest --coverage
+   ```
+
+After the run, Jest will generate coverage artifacts under `coverage/` (including `coverage/lcov.info`).
+
+### Enable Codecov upload in GitHub Actions
+
+1. Create/sign in to a Codecov account and add this repository.
+2. Get the repository upload token from Codecov.
+3. In GitHub, add the token as a repository secret:
+
+   - Go to **Settings → Secrets and variables → Actions**
+   - Click **New repository secret**
+   - Name: `CODECOV_TOKEN`
+   - Value: (paste the token from Codecov)
+
+Once set, every `push` will trigger the workflow and upload coverage automatically.
+
 ## Technologies Used
+
 The Budget App was built using the following technologies and tools:
 
 - HTML5
@@ -37,12 +77,15 @@ The Budget App was built using the following technologies and tools:
 - JavaScript
 
 ## Credits
+
 The Budget App tutorial was created by [aaramiss](https://samiraatech.github.io/Budget-app/).
 
 ## License
+
 The Budget App is released under the MIT License. You are free to use, modify, and distribute this project for personal and commercial purposes.
 
 ## Feedback and Support
-If you have any questions, suggestions, or issues with the Budget App, feel free to reach out by creating an issue in the [GitHub repository]([url](https://github.com/aaramiss/Budget-app/issues)). We welcome any feedback to improve the app and make it even more useful for managing personal finances.
+
+If you have any questions, suggestions, or issues with the Budget App, feel free to reach out by creating an issue in the [GitHub repository](https://github.com/aaramiss/Budget-app/issues). We welcome any feedback to improve the app and make it even more useful for managing personal finances.
 
 Happy budgeting!
