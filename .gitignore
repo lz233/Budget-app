@@ -1,0 +1,8 @@
+# Node lockfile (ignore as requested)
+package-lock.json
+
+# Node dependencies
+node_modules/
+
+# Test artifacts
+coverage/

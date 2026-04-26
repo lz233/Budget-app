@@ -39,3 +39,5 @@ function updateChart(income, outcome) {
   drawCircle("#FFF", -ratio, true);
   drawCircle("#F0624D", 1 - ratio, false);
 }
+
+globalThis.updateChart = updateChart;
