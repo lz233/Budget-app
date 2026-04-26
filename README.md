@@ -1,6 +1,7 @@
 # Budget-App-JavaScript
 
 [![codecov](https://codecov.io/gh/lz233/Budget-app/graph/badge.svg?token=939YI5996C)](https://codecov.io/gh/lz233/Budget-app)
+[![Vercel](https://vercelbadge.vercel.app/api/lz233/Budget-app)](https://budget.project.ac.cn)
 
 Welcome to the Budget App! This project is the result of following a comprehensive YouTube tutorial that guides you through building a budget management application from scratch. With this app, you can efficiently track your income, expenses, and overall budget, gaining better control of your financial situation.
 
@@ -9,7 +10,7 @@ Welcome to the Budget App! This project is the result of following a comprehensi
 You can check out the live demo of the Budget App here.
 **Online Demo of Project :**
 
-[Link to Budget App](https://smircodes.github.io/Budget-app/)
+[Link to Budget App](https://budget.project.ac.cn)
 
 ## Features
 
@@ -32,6 +33,30 @@ You can check out the live demo of the Budget App here.
 1. Start by adding your income and expenses to track your budget. The app will automatically calculate your available budget.
 
 1. Monitor your budget regularly and adjust your spending to achieve your financial goals.
+
+## Deployment (Vercel)
+
+This project is a static site (HTML/CSS/JS). You can deploy it on Vercel without a build step.
+
+### Deploy via Vercel Dashboard
+
+1. Go to Vercel and click **Add New → Project**.
+2. Import this GitHub repository.
+3. In **Build & Output Settings**:
+   - **Framework Preset**: `Other`
+   - **Build Command**: leave empty
+   - **Output Directory**: `.`
+4. Click **Deploy**.
+
+After deployment, Vercel will provide a `.vercel.app` URL. You can also add a custom domain in **Project Settings → Domains**.
+
+### Deploy via Vercel CLI (optional)
+
+```bash
+npm i -g vercel
+vercel
+vercel --prod
+```
 
 ## Tests & Coverage (Codecov)
 
@@ -86,6 +111,6 @@ The Budget App is released under the MIT License. You are free to use, modify, a
 
 ## Feedback and Support
 
-If you have any questions, suggestions, or issues with the Budget App, feel free to reach out by creating an issue in the [GitHub repository](https://github.com/aaramiss/Budget-app/issues). We welcome any feedback to improve the app and make it even more useful for managing personal finances.
+If you have any questions, suggestions, or issues with the Budget App, feel free to reach out by creating an issue in the [GitHub repository](https://github.com/lz233/Budget-app/issues). We welcome any feedback to improve the app and make it even more useful for managing personal finances.
 
 Happy budgeting!
