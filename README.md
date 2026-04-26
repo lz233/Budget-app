@@ -1,5 +1,7 @@
 # Budget-App-JavaScript
 
+[![codecov](https://codecov.io/gh/lz233/Budget-app/graph/badge.svg?token=939YI5996C)](https://codecov.io/gh/lz233/Budget-app)
+
 Welcome to the Budget App! This project is the result of following a comprehensive YouTube tutorial that guides you through building a budget management application from scratch. With this app, you can efficiently track your income, expenses, and overall budget, gaining better control of your financial situation.
 
 ## Demo
