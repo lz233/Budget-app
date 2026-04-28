@@ -49,13 +49,6 @@ function validateInput(titleRaw, amountRaw) {
   return { valid: true, title, amount };
 }
 
-function showError(formType, message) {
-  const errEl = document.getElementById(formType + "-error");
-  if (!errEl) return;
-  errEl.textContent = message || "";
-  errEl.hidden = !message;
-}
-
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
 updateUI();
@@ -83,25 +76,25 @@ allBtn.addEventListener("click", function () {
 addExpense.addEventListener("click", function () {
   const result = validateInput(expenseTitle.value, expenseAmount.value);
   if (!result.valid) {
-    showError("expense", result.message);
+    showToast(result.message, true);
     return;
   }
-  showError("expense", null);
   ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
   updateUI();
   clearInput([expenseTitle, expenseAmount]);
+  showToast("Expense added successfully!");
 });
 
 addIncome.addEventListener("click", function () {
   const result = validateInput(incomeTitle.value, incomeAmount.value);
   if (!result.valid) {
-    showError("income", result.message);
+    showToast(result.message, true);
     return;
   }
-  showError("income", null);
   ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
+  showToast("Income added successfully!");
 });
 
 incomeList.addEventListener("click", deleteOrEdit);
@@ -247,4 +240,25 @@ function inactive(elements) {
   elements.forEach((element) => {
     element.classList.remove("focus");
   });
+}
+
+function showToast(message, isError = false) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  
+  if (isError) {
+    toast.style.backgroundColor = "#c0392b";
+  } else {
+    toast.style.backgroundColor = "#27ae60";
+  }
+  
+  toast.classList.add("show");
+  
+  // Clear any existing timeout to avoid overlapping dismissals
+  if (toast.timeoutId) clearTimeout(toast.timeoutId);
+  
+  toast.timeoutId = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
