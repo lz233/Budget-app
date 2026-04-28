@@ -249,8 +249,12 @@ function showToast(message, isError = false) {
   
   if (isError) {
     toast.style.backgroundColor = "#c0392b";
+    toast.setAttribute("role", "alert");
+    toast.setAttribute("aria-live", "assertive");
   } else {
     toast.style.backgroundColor = "#27ae60";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
   }
   
   toast.classList.add("show");
