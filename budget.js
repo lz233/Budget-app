@@ -90,6 +90,7 @@ addExpense.addEventListener("click", function () {
   ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
   updateUI();
   clearInput([expenseTitle, expenseAmount]);
+  showToast("Expense added successfully!");
 });
 
 addIncome.addEventListener("click", function () {
@@ -102,6 +103,7 @@ addIncome.addEventListener("click", function () {
   ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
+  showToast("Income added successfully!");
 });
 
 incomeList.addEventListener("click", deleteOrEdit);
@@ -247,4 +249,18 @@ function inactive(elements) {
   elements.forEach((element) => {
     element.classList.remove("focus");
   });
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add("show");
+  
+  // Clear any existing timeout to avoid overlapping dismissals
+  if (toast.timeoutId) clearTimeout(toast.timeoutId);
+  
+  toast.timeoutId = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
