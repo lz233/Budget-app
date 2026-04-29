@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Budget Web App | javascript</title>
+    <title>Budget Web App</title>
     <link href="./style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div class="budget-container">
-      <div class="app-title">
+      <div class="app-title" style="display: flex; justify-content: space-between; align-items: center; padding-right: 20px;">
         <a href="">Budget<b>App</b></a>
+        <a href="./privacy.html" style="font-size: 0.8rem; opacity: 0.7;">Privacy Policy</a>
       </div>
       <div class="budget-header">
         <div class="balance">
@@ -89,6 +90,16 @@
         </div>
       </div>
       <div id="toast" class="toast" aria-live="polite" role="status"></div>
+    </div>
+    <div id="cookie-modal" class="cookie-modal hide" role="dialog" aria-modal="true" aria-labelledby="cookie-title">
+      <div class="cookie-banner">
+        <h3 id="cookie-title">Cookie Preferences</h3>
+        <p>We use cookies to ensure you get the best experience on our website. Read our <a href="./privacy.html" class="privacy-link">Privacy Policy</a> for more details.</p>
+        <div class="cookie-buttons">
+          <button id="btn-essential-cookies" class="btn-secondary">Accept Essential Only</button>
+          <button id="btn-all-cookies" class="btn-primary">Accept All Cookies</button>
+        </div>
+      </div>
     </div>
     <script src="./chart.js"></script>
     <script src="./budget.js"></script>

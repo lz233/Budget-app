@@ -73,4 +73,32 @@ describe("budget interactions", () => {
     expect(expenseList.children.length).toBe(1);
     expect(expenseList.children[0].textContent).toContain("Coffee : $5.5");
   });
+
+  test("shows cookie banner on load if no consent", () => {
+    const cookieModal = document.getElementById("cookie-modal");
+    // Since localStorage was cleared in setupDom, hide class should be removed
+    expect(cookieModal.classList.contains("hide")).toBe(false);
+  });
+
+  test("hides cookie banner and saves consent when clicking essential", () => {
+    const cookieModal = document.getElementById("cookie-modal");
+    const btnEssential = document.getElementById("btn-essential-cookies");
+    const toast = document.getElementById("toast");
+
+    btnEssential.click();
+
+    expect(localStorage.getItem("cookie_consent")).toBe("essential");
+    expect(cookieModal.classList.contains("hide")).toBe(true);
+  });
+
+  test("hides cookie banner and saves consent when clicking all cookies", () => {
+    const cookieModal = document.getElementById("cookie-modal");
+    const btnAll = document.getElementById("btn-all-cookies");
+    const toast = document.getElementById("toast");
+
+    btnAll.click();
+
+    expect(localStorage.getItem("cookie_consent")).toBe("all");
+    expect(cookieModal.classList.contains("hide")).toBe(true);
+  });
 });
