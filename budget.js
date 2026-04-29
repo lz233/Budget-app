@@ -266,3 +266,28 @@ function showToast(message, isError = false) {
     toast.classList.remove("show");
   }, 2500);
 }
+
+// COOKIE BANNER LOGIC
+const cookieModal = document.getElementById("cookie-modal");
+const btnEssential = document.getElementById("btn-essential-cookies");
+const btnAll = document.getElementById("btn-all-cookies");
+
+function checkCookieConsent() {
+  const consent = localStorage.getItem("cookie_consent");
+  if (!consent && cookieModal) {
+    cookieModal.classList.remove("hide");
+  }
+}
+
+function handleConsent(type) {
+  localStorage.setItem("cookie_consent", type);
+  cookieModal.classList.add("hide");
+}
+
+if (btnEssential && btnAll) {
+  btnEssential.addEventListener("click", () => handleConsent("essential"));
+  btnAll.addEventListener("click", () => handleConsent("all"));
+}
+
+// Initialize check
+checkCookieConsent();

@@ -4,6 +4,7 @@
   font-weight: bold;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gilroy Bold";
   src: url("font/Gilroy-Bold.woff") format("woff");
@@ -47,6 +48,8 @@ input[type="number"] {
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   background-color: #2a0355;
+  display: flex;
+  flex-direction: column;
 }
 
 .budget-container .app-title {
@@ -57,12 +60,12 @@ input[type="number"] {
 .budget-container .app-title a {
   color: #fff;
 }
+
 .budget-container .app-title a b {
   font-family: "Gilroy Bold";
 }
 
-.budget-header {
-}
+.budget-header {}
 
 .budget-header .balance {
   margin-top: 25px;
@@ -103,6 +106,7 @@ input[type="number"] {
   color: #fff;
   opacity: 0.5;
 }
+
 .budget-header .account .income .income-total {
   color: #fff;
   font-family: "Gilroy Bold";
@@ -112,6 +116,7 @@ input[type="number"] {
   color: #fff;
   opacity: 0.5;
 }
+
 .budget-header .account .outcome .outcome-total {
   color: #f0624d;
   font-family: "Gilroy Bold";
@@ -119,9 +124,11 @@ input[type="number"] {
 
 /**************   DASHBOARD    ***********/
 .budget-dashboard {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 360px;
-  min-height: 470px;
+  flex: 1;
+  min-height: 0;
   background-color: #fff;
   margin-top: 35px;
   border-radius: 30px 30px 0 0;
@@ -163,7 +170,7 @@ input[type="number"] {
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .budget-dashboard input {
@@ -177,17 +184,21 @@ input[type="number"] {
 /* ////////// ALL ///////////// */
 .budget-dashboard #all {
   width: 360px;
-  height: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   position: relative;
 }
+
 .budget-dashboard #all ul {
   width: 360px;
-  height: 270px;
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
   margin-top: 20px;
-  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .budget-dashboard #all ul.list li {
@@ -225,8 +236,8 @@ input[type="number"] {
   background-repeat: no-repeat;
 }
 
-.budget-dashboard #all ul.list li.income {
-}
+.budget-dashboard #all ul.list li.income {}
+
 .budget-dashboard #all ul.list li.expense {
   color: #f0624d;
 }
@@ -234,15 +245,16 @@ input[type="number"] {
 /* //////// EXPENSE ////////// */
 .budget-dashboard #expense {
   width: 360px;
-  min-height: 339px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   position: relative;
 }
 
 .budget-dashboard #expense .input {
-  position: absolute;
   display: block;
   width: 360px;
-  bottom: 0;
   border-top: 1px solid #ccc;
 }
 
@@ -283,12 +295,12 @@ input[type="number"] {
 
 .budget-dashboard #expense ul {
   width: 360px;
-  min-height: 285px;
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
   margin-top: 20px;
-  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .budget-dashboard #expense ul.list li {
@@ -337,15 +349,16 @@ input[type="number"] {
 /* /////// INCOME //////// */
 .budget-dashboard #income {
   width: 360px;
-  min-height: 339px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   position: relative;
 }
 
 .budget-dashboard #income .input {
-  position: absolute;
   display: block;
   width: 360px;
-  bottom: 0;
   border-top: 1px solid #ccc;
 }
 
@@ -386,12 +399,12 @@ input[type="number"] {
 
 .budget-dashboard #income ul {
   width: 360px;
-  height: auto;
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
   margin-top: 20px;
-  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .budget-dashboard #income ul.list li {
@@ -446,7 +459,7 @@ input[type="number"] {
 /* TOAST NOTIFICATION */
 .toast {
   position: absolute;
-  bottom: 30px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #27ae60;
@@ -459,11 +472,83 @@ input[type="number"] {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   white-space: nowrap;
 }
 
 .toast.show {
   opacity: 1;
+}
+
+/* COOKIE BANNER MODAL */
+.cookie-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.cookie-modal.hide {
+  display: none;
+}
+
+.cookie-banner {
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-family: "Gilroy", sans-serif;
+  box-sizing: border-box;
+}
+
+.cookie-banner h3 {
+  margin-top: 0;
+  color: #1a0034;
+  font-family: "Gilroy Bold", sans-serif;
+}
+
+.cookie-banner p {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.cookie-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cookie-buttons button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-family: "Gilroy Bold", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.cookie-buttons button:hover {
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #f0624d;
+  color: #fff;
 }
