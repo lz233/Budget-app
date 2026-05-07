@@ -23,13 +23,22 @@ const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
 
+//COOKIE ELEMENTS
+const cookieModal = document.getElementById("cookie-modal");
+const btnEssentialCookies = document.getElementById("btn-essential-cookies");
+const btnAllCookies = document.getElementById("btn-all-cookies");
+
 //VARIABLES
 let ENTRY_LIST;
 let balance = 0,
   income = 0,
   outcome = 0;
+
 const DELETE = "delete",
   EDIT = "edit";
+
+const ENTRY_LIST_KEY = "entry_list";
+const COOKIE_CONSENT_KEY = "cookie_consent";
 
 function validateInput(titleRaw, amountRaw) {
   const title = String(titleRaw || "").trim();
@@ -52,7 +61,7 @@ function validateInput(titleRaw, amountRaw) {
 }
 
 function loadEntryList() {
-  const raw = localStorage.getItem("entry_list");
+  const raw = localStorage.getItem(ENTRY_LIST_KEY);
 
   if (!raw) {
     return [];
@@ -75,66 +84,104 @@ function loadEntryList() {
       );
     });
   } catch (error) {
-    console.warn("Invalid entry_list in localStorage, resetting to empty array.", error);
     return [];
   }
 }
 
 function saveEntryList() {
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+  localStorage.setItem(ENTRY_LIST_KEY, JSON.stringify(ENTRY_LIST));
+}
+
+function setupCookieBanner() {
+  if (!cookieModal) return;
+
+  const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+
+  if (consent) {
+    cookieModal.classList.add("hide");
+  } else {
+    cookieModal.classList.remove("hide");
+  }
+
+  if (btnEssentialCookies) {
+    btnEssentialCookies.addEventListener("click", function () {
+      localStorage.setItem(COOKIE_CONSENT_KEY, "essential");
+      cookieModal.classList.add("hide");
+    });
+  }
+
+  if (btnAllCookies) {
+    btnAllCookies.addEventListener("click", function () {
+      localStorage.setItem(COOKIE_CONSENT_KEY, "all");
+      cookieModal.classList.add("hide");
+    });
+  }
 }
 
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = loadEntryList();
 updateUI();
+setupCookieBanner();
 
 //EVENT LISTENERS
-expenseBtn.addEventListener("click", function () {
-  show(expenseEl);
-  hide([incomeEl, allEl]);
-  active(expenseBtn);
-  inactive([incomeBtn, allBtn]);
-});
-incomeBtn.addEventListener("click", function () {
-  show(incomeEl);
-  hide([expenseEl, allEl]);
-  active(incomeBtn);
-  inactive([expenseBtn, allBtn]);
-});
-allBtn.addEventListener("click", function () {
-  show(allEl);
-  hide([incomeEl, expenseEl]);
-  active(allBtn);
-  inactive([incomeBtn, expenseBtn]);
-});
+if (expenseBtn) {
+  expenseBtn.addEventListener("click", function () {
+    show(expenseEl);
+    hide([incomeEl, allEl]);
+    active(expenseBtn);
+    inactive([incomeBtn, allBtn]);
+  });
+}
 
-addExpense.addEventListener("click", function () {
-  const result = validateInput(expenseTitle.value, expenseAmount.value);
-  if (!result.valid) {
-    showToast(result.message, true);
-    return;
-  }
-  ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
-  updateUI();
-  clearInput([expenseTitle, expenseAmount]);
-  showToast("Expense added successfully!");
-});
+if (incomeBtn) {
+  incomeBtn.addEventListener("click", function () {
+    show(incomeEl);
+    hide([expenseEl, allEl]);
+    active(incomeBtn);
+    inactive([expenseBtn, allBtn]);
+  });
+}
 
-addIncome.addEventListener("click", function () {
-  const result = validateInput(incomeTitle.value, incomeAmount.value);
-  if (!result.valid) {
-    showToast(result.message, true);
-    return;
-  }
-  ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
-  updateUI();
-  clearInput([incomeTitle, incomeAmount]);
-  showToast("Income added successfully!");
-});
+if (allBtn) {
+  allBtn.addEventListener("click", function () {
+    show(allEl);
+    hide([incomeEl, expenseEl]);
+    active(allBtn);
+    inactive([incomeBtn, expenseBtn]);
+  });
+}
 
-incomeList.addEventListener("click", deleteOrEdit);
-expenseList.addEventListener("click", deleteOrEdit);
-allList.addEventListener("click", deleteOrEdit);
+if (addExpense) {
+  addExpense.addEventListener("click", function () {
+    const result = validateInput(expenseTitle.value, expenseAmount.value);
+    if (!result.valid) {
+      showToast(result.message, true);
+      return;
+    }
+    ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
+    updateUI();
+    clearInput([expenseTitle, expenseAmount]);
+    showToast("Expense added successfully!");
+  });
+}
+
+if (addIncome) {
+  addIncome.addEventListener("click", function () {
+    const result = validateInput(incomeTitle.value, incomeAmount.value);
+    if (!result.valid) {
+      showToast(result.message, true);
+      return;
+    }
+    ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
+    updateUI();
+    clearInput([incomeTitle, incomeAmount]);
+    showToast("Income added successfully!");
+  });
+}
+
+if (incomeList) incomeList.addEventListener("click", deleteOrEdit);
+if (expenseList) expenseList.addEventListener("click", deleteOrEdit);
+if (allList) allList.addEventListener("click", deleteOrEdit);
 
 // HELEPER FUNCS
 function deleteOrEdit(event) {
@@ -174,23 +221,29 @@ function updateUI() {
   let sign = income >= outcome ? "$" : "-$";
 
   //UPDATE UI
-  balanceEl.replaceChildren();
-  const balSmall = document.createElement("small");
-  balSmall.textContent = sign;
-  balanceEl.appendChild(balSmall);
-  balanceEl.appendChild(document.createTextNode(String(balance)));
+  if (balanceEl) {
+    balanceEl.replaceChildren();
+    const balSmall = document.createElement("small");
+    balSmall.textContent = sign;
+    balanceEl.appendChild(balSmall);
+    balanceEl.appendChild(document.createTextNode(String(balance)));
+  }
 
-  outcomeTotalEl.replaceChildren();
-  const outSmall = document.createElement("small");
-  outSmall.textContent = "$";
-  outcomeTotalEl.appendChild(outSmall);
-  outcomeTotalEl.appendChild(document.createTextNode(String(outcome)));
+  if (outcomeTotalEl) {
+    outcomeTotalEl.replaceChildren();
+    const outSmall = document.createElement("small");
+    outSmall.textContent = "$";
+    outcomeTotalEl.appendChild(outSmall);
+    outcomeTotalEl.appendChild(document.createTextNode(String(outcome)));
+  }
 
-  incomeTotalEl.replaceChildren();
-  const incSmall = document.createElement("small");
-  incSmall.textContent = "$";
-  incomeTotalEl.appendChild(incSmall);
-  incomeTotalEl.appendChild(document.createTextNode(String(income)));
+  if (incomeTotalEl) {
+    incomeTotalEl.replaceChildren();
+    const incSmall = document.createElement("small");
+    incSmall.textContent = "$";
+    incomeTotalEl.appendChild(incSmall);
+    incomeTotalEl.appendChild(document.createTextNode(String(income)));
+  }
 
   clearElement([expenseList, incomeList, allList]);
 
@@ -203,11 +256,16 @@ function updateUI() {
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
 
-  updateChart(income, outcome);
+  if (typeof updateChart === "function") {
+    updateChart(income, outcome);
+  }
+
   saveEntryList();
 }
 
 function showEntry(list, type, title, amount, id) {
+  if (!list) return;
+
   const li = document.createElement("li");
   li.dataset.id = id;
   li.className = type;
@@ -236,7 +294,7 @@ function showEntry(list, type, title, amount, id) {
 
 function clearElement(elements) {
   elements.forEach((element) => {
-    element.innerHTML = "";
+    if (element) element.innerHTML = "";
   });
 }
 
@@ -256,27 +314,27 @@ function calculateBalance(income, outcome) {
 
 function clearInput(inputs) {
   inputs.forEach((input) => {
-    input.value = "";
+    if (input) input.value = "";
   });
 }
 
 function show(element) {
-  element.classList.remove("hide");
+  if (element) element.classList.remove("hide");
 }
 
 function hide(elements) {
   elements.forEach((element) => {
-    element.classList.add("hide");
+    if (element) element.classList.add("hide");
   });
 }
 
 function active(element) {
-  element.classList.add("focus");
+  if (element) element.classList.add("focus");
 }
 
 function inactive(elements) {
   elements.forEach((element) => {
-    element.classList.remove("focus");
+    if (element) element.classList.remove("focus");
   });
 }
 
