@@ -33,24 +33,59 @@ const DELETE = "delete",
 
 function validateInput(titleRaw, amountRaw) {
   const title = String(titleRaw || "").trim();
-  if (title.length === 0)  return { valid: false, message: "Please enter a title." };
-  if (title.length > 50)   return { valid: false, message: "Title must be 50 characters or fewer." };
+  if (title.length === 0) return { valid: false, message: "Please enter a title." };
+  if (title.length > 50) return { valid: false, message: "Title must be 50 characters or fewer." };
 
   if (amountRaw === "" || amountRaw === null) {
     return { valid: false, message: "Please enter an amount." };
   }
+
   const amount = Number(amountRaw);
-  if (!Number.isFinite(amount))  return { valid: false, message: "Amount must be a number." };
-  if (amount < 0.01)             return { valid: false, message: "Amount must be greater than zero." };
-  if (amount > 9999999)          return { valid: false, message: "Amount is too large." };
+  if (!Number.isFinite(amount)) return { valid: false, message: "Amount must be a number." };
+  if (amount < 0.01) return { valid: false, message: "Amount must be greater than zero." };
+  if (amount > 9999999) return { valid: false, message: "Amount is too large." };
   if (Math.round(amount * 100) / 100 !== amount) {
     return { valid: false, message: "Use at most 2 decimal places." };
   }
+
   return { valid: true, title, amount };
 }
 
+function loadEntryList() {
+  const raw = localStorage.getItem("entry_list");
+
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter((entry) => {
+      return (
+        entry &&
+        (entry.type === "income" || entry.type === "expense") &&
+        typeof entry.title === "string" &&
+        typeof entry.amount === "number" &&
+        Number.isFinite(entry.amount)
+      );
+    });
+  } catch (error) {
+    console.warn("Invalid entry_list in localStorage, resetting to empty array.", error);
+    return [];
+  }
+}
+
+function saveEntryList() {
+  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+}
+
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+ENTRY_LIST = loadEntryList();
 updateUI();
 
 //EVENT LISTENERS
@@ -167,13 +202,14 @@ function updateUI() {
     }
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
+
   updateChart(income, outcome);
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+  saveEntryList();
 }
 
 function showEntry(list, type, title, amount, id) {
   const li = document.createElement("li");
-  li.dataset.id = id;                
+  li.dataset.id = id;
   li.className = type;
 
   const body = document.createElement("div");
@@ -184,18 +220,18 @@ function showEntry(list, type, title, amount, id) {
   const editBtn = document.createElement("button");
   editBtn.type = "button";
   editBtn.className = "edit-btn";
-  editBtn.dataset.action = "edit";     
+  editBtn.dataset.action = "edit";
   editBtn.setAttribute("aria-label", "Edit entry");
   li.appendChild(editBtn);
 
   const deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
   deleteBtn.className = "delete-btn";
-  deleteBtn.dataset.action = "delete";        
+  deleteBtn.dataset.action = "delete";
   deleteBtn.setAttribute("aria-label", "Delete entry");
   li.appendChild(deleteBtn);
 
-  list.insertBefore(li, list.firstChild); 
+  list.insertBefore(li, list.firstChild);
 }
 
 function clearElement(elements) {
@@ -217,6 +253,7 @@ function calculateTotal(type, list) {
 function calculateBalance(income, outcome) {
   return income - outcome;
 }
+
 function clearInput(inputs) {
   inputs.forEach((input) => {
     input.value = "";
@@ -236,6 +273,7 @@ function hide(elements) {
 function active(element) {
   element.classList.add("focus");
 }
+
 function inactive(elements) {
   elements.forEach((element) => {
     element.classList.remove("focus");
@@ -245,49 +283,12 @@ function inactive(elements) {
 function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   if (!toast) return;
+
   toast.textContent = message;
-  
-  if (isError) {
-    toast.style.backgroundColor = "#c0392b";
-    toast.setAttribute("role", "alert");
-    toast.setAttribute("aria-live", "assertive");
-  } else {
-    toast.style.backgroundColor = "#27ae60";
-    toast.setAttribute("role", "status");
-    toast.setAttribute("aria-live", "polite");
-  }
-  
   toast.classList.add("show");
-  
-  // Clear any existing timeout to avoid overlapping dismissals
-  if (toast.timeoutId) clearTimeout(toast.timeoutId);
-  
-  toast.timeoutId = setTimeout(() => {
+  toast.style.backgroundColor = isError ? "#c0392b" : "#27ae60";
+
+  setTimeout(() => {
     toast.classList.remove("show");
-  }, 2500);
+  }, 2000);
 }
-
-// COOKIE BANNER LOGIC
-const cookieModal = document.getElementById("cookie-modal");
-const btnEssential = document.getElementById("btn-essential-cookies");
-const btnAll = document.getElementById("btn-all-cookies");
-
-function checkCookieConsent() {
-  const consent = localStorage.getItem("cookie_consent");
-  if (!consent && cookieModal) {
-    cookieModal.classList.remove("hide");
-  }
-}
-
-function handleConsent(type) {
-  localStorage.setItem("cookie_consent", type);
-  cookieModal.classList.add("hide");
-}
-
-if (btnEssential && btnAll) {
-  btnEssential.addEventListener("click", () => handleConsent("essential"));
-  btnAll.addEventListener("click", () => handleConsent("all"));
-}
-
-// Initialize check
-checkCookieConsent();
