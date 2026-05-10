@@ -23,83 +23,165 @@ const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
 
+//COOKIE ELEMENTS
+const cookieModal = document.getElementById("cookie-modal");
+const btnEssentialCookies = document.getElementById("btn-essential-cookies");
+const btnAllCookies = document.getElementById("btn-all-cookies");
+
 //VARIABLES
 let ENTRY_LIST;
 let balance = 0,
   income = 0,
   outcome = 0;
+
 const DELETE = "delete",
   EDIT = "edit";
 
+const ENTRY_LIST_KEY = "entry_list";
+const COOKIE_CONSENT_KEY = "cookie_consent";
+
 function validateInput(titleRaw, amountRaw) {
   const title = String(titleRaw || "").trim();
-  if (title.length === 0)  return { valid: false, message: "Please enter a title." };
-  if (title.length > 50)   return { valid: false, message: "Title must be 50 characters or fewer." };
+  if (title.length === 0) return { valid: false, message: "Please enter a title." };
+  if (title.length > 50) return { valid: false, message: "Title must be 50 characters or fewer." };
 
   if (amountRaw === "" || amountRaw === null) {
     return { valid: false, message: "Please enter an amount." };
   }
+
   const amount = Number(amountRaw);
-  if (!Number.isFinite(amount))  return { valid: false, message: "Amount must be a number." };
-  if (amount < 0.01)             return { valid: false, message: "Amount must be greater than zero." };
-  if (amount > 9999999)          return { valid: false, message: "Amount is too large." };
+  if (!Number.isFinite(amount)) return { valid: false, message: "Amount must be a number." };
+  if (amount < 0.01) return { valid: false, message: "Amount must be greater than zero." };
+  if (amount > 9999999) return { valid: false, message: "Amount is too large." };
   if (Math.round(amount * 100) / 100 !== amount) {
     return { valid: false, message: "Use at most 2 decimal places." };
   }
+
   return { valid: true, title, amount };
 }
 
+function loadEntryList() {
+  const raw = localStorage.getItem(ENTRY_LIST_KEY);
+
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter((entry) => {
+      return (
+        entry &&
+        (entry.type === "income" || entry.type === "expense") &&
+        typeof entry.title === "string" &&
+        typeof entry.amount === "number" &&
+        Number.isFinite(entry.amount)
+      );
+    });
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveEntryList() {
+  localStorage.setItem(ENTRY_LIST_KEY, JSON.stringify(ENTRY_LIST));
+}
+
+function setupCookieBanner() {
+  if (!cookieModal) return;
+
+  const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+
+  if (consent) {
+    cookieModal.classList.add("hide");
+  } else {
+    cookieModal.classList.remove("hide");
+  }
+
+  if (btnEssentialCookies) {
+    btnEssentialCookies.addEventListener("click", function () {
+      localStorage.setItem(COOKIE_CONSENT_KEY, "essential");
+      cookieModal.classList.add("hide");
+    });
+  }
+
+  if (btnAllCookies) {
+    btnAllCookies.addEventListener("click", function () {
+      localStorage.setItem(COOKIE_CONSENT_KEY, "all");
+      cookieModal.classList.add("hide");
+    });
+  }
+}
+
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+ENTRY_LIST = loadEntryList();
 updateUI();
+setupCookieBanner();
 
 //EVENT LISTENERS
-expenseBtn.addEventListener("click", function () {
-  show(expenseEl);
-  hide([incomeEl, allEl]);
-  active(expenseBtn);
-  inactive([incomeBtn, allBtn]);
-});
-incomeBtn.addEventListener("click", function () {
-  show(incomeEl);
-  hide([expenseEl, allEl]);
-  active(incomeBtn);
-  inactive([expenseBtn, allBtn]);
-});
-allBtn.addEventListener("click", function () {
-  show(allEl);
-  hide([incomeEl, expenseEl]);
-  active(allBtn);
-  inactive([incomeBtn, expenseBtn]);
-});
+if (expenseBtn) {
+  expenseBtn.addEventListener("click", function () {
+    show(expenseEl);
+    hide([incomeEl, allEl]);
+    active(expenseBtn);
+    inactive([incomeBtn, allBtn]);
+  });
+}
 
-addExpense.addEventListener("click", function () {
-  const result = validateInput(expenseTitle.value, expenseAmount.value);
-  if (!result.valid) {
-    showToast(result.message, true);
-    return;
-  }
-  ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
-  updateUI();
-  clearInput([expenseTitle, expenseAmount]);
-  showToast("Expense added successfully!");
-});
+if (incomeBtn) {
+  incomeBtn.addEventListener("click", function () {
+    show(incomeEl);
+    hide([expenseEl, allEl]);
+    active(incomeBtn);
+    inactive([expenseBtn, allBtn]);
+  });
+}
 
-addIncome.addEventListener("click", function () {
-  const result = validateInput(incomeTitle.value, incomeAmount.value);
-  if (!result.valid) {
-    showToast(result.message, true);
-    return;
-  }
-  ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
-  updateUI();
-  clearInput([incomeTitle, incomeAmount]);
-  showToast("Income added successfully!");
-});
+if (allBtn) {
+  allBtn.addEventListener("click", function () {
+    show(allEl);
+    hide([incomeEl, expenseEl]);
+    active(allBtn);
+    inactive([incomeBtn, expenseBtn]);
+  });
+}
 
-incomeList.addEventListener("click", deleteOrEdit);
-expenseList.addEventListener("click", deleteOrEdit);
-allList.addEventListener("click", deleteOrEdit);
+if (addExpense) {
+  addExpense.addEventListener("click", function () {
+    const result = validateInput(expenseTitle.value, expenseAmount.value);
+    if (!result.valid) {
+      showToast(result.message, true);
+      return;
+    }
+    ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
+    updateUI();
+    clearInput([expenseTitle, expenseAmount]);
+    showToast("Expense added successfully!");
+  });
+}
+
+if (addIncome) {
+  addIncome.addEventListener("click", function () {
+    const result = validateInput(incomeTitle.value, incomeAmount.value);
+    if (!result.valid) {
+      showToast(result.message, true);
+      return;
+    }
+    ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
+    updateUI();
+    clearInput([incomeTitle, incomeAmount]);
+    showToast("Income added successfully!");
+  });
+}
+
+if (incomeList) incomeList.addEventListener("click", deleteOrEdit);
+if (expenseList) expenseList.addEventListener("click", deleteOrEdit);
+if (allList) allList.addEventListener("click", deleteOrEdit);
 
 // HELEPER FUNCS
 function deleteOrEdit(event) {
@@ -139,23 +221,29 @@ function updateUI() {
   let sign = income >= outcome ? "$" : "-$";
 
   //UPDATE UI
-  balanceEl.replaceChildren();
-  const balSmall = document.createElement("small");
-  balSmall.textContent = sign;
-  balanceEl.appendChild(balSmall);
-  balanceEl.appendChild(document.createTextNode(String(balance)));
+  if (balanceEl) {
+    balanceEl.replaceChildren();
+    const balSmall = document.createElement("small");
+    balSmall.textContent = sign;
+    balanceEl.appendChild(balSmall);
+    balanceEl.appendChild(document.createTextNode(String(balance)));
+  }
 
-  outcomeTotalEl.replaceChildren();
-  const outSmall = document.createElement("small");
-  outSmall.textContent = "$";
-  outcomeTotalEl.appendChild(outSmall);
-  outcomeTotalEl.appendChild(document.createTextNode(String(outcome)));
+  if (outcomeTotalEl) {
+    outcomeTotalEl.replaceChildren();
+    const outSmall = document.createElement("small");
+    outSmall.textContent = "$";
+    outcomeTotalEl.appendChild(outSmall);
+    outcomeTotalEl.appendChild(document.createTextNode(String(outcome)));
+  }
 
-  incomeTotalEl.replaceChildren();
-  const incSmall = document.createElement("small");
-  incSmall.textContent = "$";
-  incomeTotalEl.appendChild(incSmall);
-  incomeTotalEl.appendChild(document.createTextNode(String(income)));
+  if (incomeTotalEl) {
+    incomeTotalEl.replaceChildren();
+    const incSmall = document.createElement("small");
+    incSmall.textContent = "$";
+    incomeTotalEl.appendChild(incSmall);
+    incomeTotalEl.appendChild(document.createTextNode(String(income)));
+  }
 
   clearElement([expenseList, incomeList, allList]);
 
@@ -167,13 +255,19 @@ function updateUI() {
     }
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
-  updateChart(income, outcome);
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+
+  if (typeof updateChart === "function") {
+    updateChart(income, outcome);
+  }
+
+  saveEntryList();
 }
 
 function showEntry(list, type, title, amount, id) {
+  if (!list) return;
+
   const li = document.createElement("li");
-  li.dataset.id = id;                
+  li.dataset.id = id;
   li.className = type;
 
   const body = document.createElement("div");
@@ -184,23 +278,23 @@ function showEntry(list, type, title, amount, id) {
   const editBtn = document.createElement("button");
   editBtn.type = "button";
   editBtn.className = "edit-btn";
-  editBtn.dataset.action = "edit";     
+  editBtn.dataset.action = "edit";
   editBtn.setAttribute("aria-label", "Edit entry");
   li.appendChild(editBtn);
 
   const deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
   deleteBtn.className = "delete-btn";
-  deleteBtn.dataset.action = "delete";        
+  deleteBtn.dataset.action = "delete";
   deleteBtn.setAttribute("aria-label", "Delete entry");
   li.appendChild(deleteBtn);
 
-  list.insertBefore(li, list.firstChild); 
+  list.insertBefore(li, list.firstChild);
 }
 
 function clearElement(elements) {
   elements.forEach((element) => {
-    element.innerHTML = "";
+    if (element) element.innerHTML = "";
   });
 }
 
@@ -217,77 +311,42 @@ function calculateTotal(type, list) {
 function calculateBalance(income, outcome) {
   return income - outcome;
 }
+
 function clearInput(inputs) {
   inputs.forEach((input) => {
-    input.value = "";
+    if (input) input.value = "";
   });
 }
 
 function show(element) {
-  element.classList.remove("hide");
+  if (element) element.classList.remove("hide");
 }
 
 function hide(elements) {
   elements.forEach((element) => {
-    element.classList.add("hide");
+    if (element) element.classList.add("hide");
   });
 }
 
 function active(element) {
-  element.classList.add("focus");
+  if (element) element.classList.add("focus");
 }
+
 function inactive(elements) {
   elements.forEach((element) => {
-    element.classList.remove("focus");
+    if (element) element.classList.remove("focus");
   });
 }
 
 function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   if (!toast) return;
+
   toast.textContent = message;
-  
-  if (isError) {
-    toast.style.backgroundColor = "#c0392b";
-    toast.setAttribute("role", "alert");
-    toast.setAttribute("aria-live", "assertive");
-  } else {
-    toast.style.backgroundColor = "#27ae60";
-    toast.setAttribute("role", "status");
-    toast.setAttribute("aria-live", "polite");
-  }
-  
   toast.classList.add("show");
-  
-  // Clear any existing timeout to avoid overlapping dismissals
-  if (toast.timeoutId) clearTimeout(toast.timeoutId);
-  
-  toast.timeoutId = setTimeout(() => {
+  toast.style.backgroundColor = isError ? "#c0392b" : "#27ae60";
+
+  setTimeout(() => {
     toast.classList.remove("show");
-  }, 2500);
+  }, 2000);
 }
-
-// COOKIE BANNER LOGIC
-const cookieModal = document.getElementById("cookie-modal");
-const btnEssential = document.getElementById("btn-essential-cookies");
-const btnAll = document.getElementById("btn-all-cookies");
-
-function checkCookieConsent() {
-  const consent = localStorage.getItem("cookie_consent");
-  if (!consent && cookieModal) {
-    cookieModal.classList.remove("hide");
-  }
-}
-
-function handleConsent(type) {
-  localStorage.setItem("cookie_consent", type);
-  cookieModal.classList.add("hide");
-}
-
-if (btnEssential && btnAll) {
-  btnEssential.addEventListener("click", () => handleConsent("essential"));
-  btnAll.addEventListener("click", () => handleConsent("all"));
-}
-
-// Initialize check
-checkCookieConsent();
