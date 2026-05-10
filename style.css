@@ -221,6 +221,13 @@ input[type="number"] {
   font-family: "Gilroy Bold";
 }
 
+.edit-btn,
+.delete-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
 .budget-dashboard #all ul.list li .edit-btn {
   visibility: hidden;
 }
