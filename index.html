@@ -10,32 +10,32 @@
   <body>
     <div class="budget-container">
       <div class="app-title" style="display: flex; justify-content: space-between; align-items: center; padding-right: 20px;">
-        <a href="">Budget<b>App</b></a>
-        <a href="./privacy.html" style="font-size: 0.8rem; opacity: 0.7;">Privacy Policy</a>
+        <a href=""><span data-i18n="app.title.budget">Budget</span><b data-i18n="app.title.app">App</b></a>
+        <a href="./settings.html" style="font-size: 0.8rem; opacity: 0.7;" data-i18n="nav.settings">Settings</a>
       </div>
       <div class="budget-header">
         <div class="balance">
-          <div class="title">Balance</div>
+          <div class="title" data-i18n="header.balance">Balance</div>
           <div class="value"><small>$</small>0</div>
         </div>
         <div class="account">
           <div class="income">
-            <div class="title">Income</div>
+            <div class="title" data-i18n="header.income">Income</div>
             <div class="income-total"><small>$</small>0</div>
           </div>
           <div class="chart"></div>
           <div class="outcome">
-            <div class="title">Outcome</div>
+            <div class="title" data-i18n="header.outcome">Outcome</div>
             <div class="outcome-total"><small>$</small>0</div>
           </div>
         </div>
       </div>
       <div class="budget-dashboard">
-        <div class="dash-title">Dashboard</div>
+        <div class="dash-title" data-i18n="dashboard.title">Dashboard</div>
         <div class="toggle">
-          <div class="first-tab">Expenses</div>
-          <div class="second-tab">Income</div>
-          <div class="third-tab focus">All</div>
+          <div class="first-tab" data-i18n="tab.expenses">Expenses</div>
+          <div class="second-tab" data-i18n="tab.income">Income</div>
+          <div class="third-tab focus" data-i18n="tab.all">All</div>
         </div>
         <div class="hide" id="expense">
           <ul class="list"></ul>
@@ -45,6 +45,7 @@
               id="expense-title-input"
               name="title"
               placeholder="title"
+              data-i18n-placeholder="input.placeholder.title"
               required 
               maxlength="50"
             />
@@ -53,6 +54,7 @@
               id="expense-amount-input"
               name="amount"
               placeholder="$0"
+              data-i18n-placeholder="input.placeholder.amount"
               required
               min="0.01"
               max="9999999"
@@ -69,6 +71,7 @@
               id="income-title-input"
               name="title"
               placeholder="title"
+              data-i18n-placeholder="input.placeholder.title"
               required 
               maxlength="50"
             />
@@ -77,6 +80,7 @@
               id="income-amount-input"
               name="amount"
               placeholder="$0"
+              data-i18n-placeholder="input.placeholder.amount"
               required
               min="0.01"
               max="9999999"
@@ -93,14 +97,15 @@
     </div>
     <div id="cookie-modal" class="cookie-modal hide" role="dialog" aria-modal="true" aria-labelledby="cookie-title">
       <div class="cookie-banner">
-        <h3 id="cookie-title">Cookie Preferences</h3>
-        <p>We use cookies to ensure you get the best experience on our website. Read our <a href="./privacy.html" class="privacy-link">Privacy Policy</a> for more details.</p>
+        <h3 id="cookie-title" data-i18n="cookie.title">Cookie Preferences</h3>
+        <p><span data-i18n="cookie.message">We use cookies to ensure you get the best experience on our website. Read our </span><a href="./privacy.html" class="privacy-link" data-i18n="cookie.privacy_link">Privacy Policy</a><span data-i18n="cookie.message_end"> for more details.</span></p>
         <div class="cookie-buttons">
-          <button id="btn-essential-cookies" class="btn-secondary">Accept Essential Only</button>
-          <button id="btn-all-cookies" class="btn-primary">Accept All Cookies</button>
+          <button id="btn-essential-cookies" class="btn-secondary" data-i18n="cookie.accept_essential">Accept Essential Only</button>
+          <button id="btn-all-cookies" class="btn-primary" data-i18n="cookie.accept_all">Accept All Cookies</button>
         </div>
       </div>
     </div>
+    <script src="./i18n.js"></script>
     <script src="./chart.js"></script>
     <script src="./budget.js"></script>
   </body>
