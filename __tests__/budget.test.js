@@ -177,4 +177,114 @@ describe("budget app helpers and edge cases", () => {
 
     expect(toast.classList.contains("show")).toBe(false);
   });
+
+  test("deletes an expense via delete button", () => {
+    loadApp();
+
+    const expenseTitle = document.getElementById("expense-title-input");
+    const expenseAmount = document.getElementById("expense-amount-input");
+    const addExpenseBtn = document.querySelector(".add-expense");
+    const expenseList = document.querySelector("#expense .list");
+
+    expenseTitle.value = "Coffee";
+    expenseAmount.value = "5.50";
+    addExpenseBtn.click();
+    jest.runAllTimers();
+
+    expect(expenseList.children.length).toBe(1);
+
+    const deleteBtn = expenseList.querySelector(".delete-btn");
+    expect(deleteBtn).not.toBeNull();
+    deleteBtn.click();
+
+    expect(expenseList.children.length).toBe(0);
+    expect(localStorage.getItem("entry_list")).toBe("[]");
+  });
+
+  test("deletes an income via delete button", () => {
+    loadApp();
+
+    const incomeTitle = document.getElementById("income-title-input");
+    const incomeAmount = document.getElementById("income-amount-input");
+    const addIncomeBtn = document.querySelector(".add-income");
+    const incomeList = document.querySelector("#income .list");
+
+    incomeTitle.value = "Salary";
+    incomeAmount.value = "1000";
+    addIncomeBtn.click();
+    jest.runAllTimers();
+
+    expect(incomeList.children.length).toBe(1);
+
+    const deleteBtn = incomeList.querySelector(".delete-btn");
+    deleteBtn.click();
+
+    expect(incomeList.children.length).toBe(0);
+    expect(localStorage.getItem("entry_list")).toBe("[]");
+  });
+
+  test("deletes from the all list via delete button", () => {
+    loadApp();
+
+    const expenseTitle = document.getElementById("expense-title-input");
+    const expenseAmount = document.getElementById("expense-amount-input");
+    const addExpenseBtn = document.querySelector(".add-expense");
+    const allList = document.querySelector("#all .list");
+
+    expenseTitle.value = "Lunch";
+    expenseAmount.value = "12";
+    addExpenseBtn.click();
+    jest.runAllTimers();
+
+    expect(allList.children.length).toBe(1);
+
+    const deleteBtn = allList.querySelector(".delete-btn");
+    deleteBtn.click();
+
+    expect(allList.children.length).toBe(0);
+  });
+
+  test("edits an expense via edit button", () => {
+    loadApp();
+
+    const expenseTitle = document.getElementById("expense-title-input");
+    const expenseAmount = document.getElementById("expense-amount-input");
+    const addExpenseBtn = document.querySelector(".add-expense");
+    const expenseList = document.querySelector("#expense .list");
+
+    expenseTitle.value = "Coffee";
+    expenseAmount.value = "5.50";
+    addExpenseBtn.click();
+    jest.runAllTimers();
+
+    const editBtn = expenseList.querySelector(".edit-btn");
+    expect(editBtn).not.toBeNull();
+    editBtn.click();
+
+    // Entry should be removed from list and values populated in inputs
+    expect(expenseList.children.length).toBe(0);
+    expect(expenseTitle.value).toBe("Coffee");
+    expect(expenseAmount.value).toBe("5.5");
+  });
+
+  test("edits an income via edit button", () => {
+    loadApp();
+
+    const incomeTitle = document.getElementById("income-title-input");
+    const incomeAmount = document.getElementById("income-amount-input");
+    const addIncomeBtn = document.querySelector(".add-income");
+    const incomeList = document.querySelector("#income .list");
+
+    incomeTitle.value = "Salary";
+    incomeAmount.value = "1000";
+    addIncomeBtn.click();
+    jest.runAllTimers();
+
+    const editBtn = incomeList.querySelector(".edit-btn");
+    editBtn.click();
+
+    expect(incomeList.children.length).toBe(0);
+    expect(incomeTitle.value).toBe("Salary");
+    expect(incomeAmount.value).toBe("1000");
+  });
 });

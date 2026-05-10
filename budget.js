@@ -188,20 +188,20 @@ function deleteOrEdit(event) {
   const targetBtn = event.target;
   const entry = targetBtn.parentNode;
 
-  if (targetBtn.id == EDIT) {
+  if (targetBtn.dataset.action == EDIT) {
     editEntry(entry);
-  } else if (targetBtn.id == DELETE) {
+  } else if (targetBtn.dataset.action == DELETE) {
     deleteEntry(entry);
   }
 }
 
 function deleteEntry(entry) {
-  ENTRY_LIST.splice(entry.id, 1);
+  ENTRY_LIST.splice(entry.dataset.id, 1);
   updateUI();
 }
 
 function editEntry(entry) {
-  const ENTRY = ENTRY_LIST[entry.id];
+  const ENTRY = ENTRY_LIST[entry.dataset.id];
 
   if (ENTRY.type == "income") {
     incomeTitle.value = ENTRY.title;
