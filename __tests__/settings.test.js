@@ -150,17 +150,8 @@ describe("settings page with i18n", () => {
     document.close();
     localStorage.clear();
 
-    // Load i18n via vm so it becomes a global, just like in a browser
-    const vm = require("vm");
-    const i18nScript = fs.readFileSync(path.join(__dirname, "..", "i18n.js"), "utf8");
-    const sandbox = {
-      localStorage: global.localStorage,
-      document: global.document,
-      window: global.window,
-    };
-    vm.createContext(sandbox);
-    vm.runInContext(i18nScript, sandbox);
-    global.i18n = sandbox.i18n;
+    // Load i18n via require() so Jest can track coverage
+    global.i18n = require("../i18n.js");
   }
 
   beforeEach(() => {

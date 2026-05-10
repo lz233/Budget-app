@@ -1,20 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const vm = require("vm");
 
 function loadI18n() {
-  const script = fs.readFileSync(path.join(__dirname, "..", "i18n.js"), "utf8");
-  // Run the script in a context that shares the jsdom globals
-  // so that localStorage, document, etc. are accessible
-  // and `var i18n` lands on the sandbox which we then copy to global.
-  const sandbox = {
-    localStorage: global.localStorage,
-    document: global.document,
-    window: global.window,
-  };
-  vm.createContext(sandbox);
-  vm.runInContext(script, sandbox);
-  global.i18n = sandbox.i18n;
+  // Use require() so Jest can instrument the file for coverage.
+  // The module.exports at the end of i18n.js returns the i18n object.
+  const mod = require("../i18n.js");
+  global.i18n = mod;
 }
 
 describe("i18n module", () => {
@@ -121,6 +112,31 @@ describe("i18n module", () => {
       expect(enVal).not.toBe(key);
       expect(cnVal).not.toBe(key);
       expect(enVal).not.toBe(cnVal);
+    });
+  });
+
+  test("applyToDOM via DOMContentLoaded when readyState is loading", () => {
+    // Simulate loading state
+    Object.defineProperty(document, "readyState", {
+      value: "loading",
+      writable: true,
+      configurable: true,
+    });
+
+    document.body.innerHTML = '<span data-i18n="header.balance">Balance</span>';
+    loadI18n();
+
+    // Text should NOT be translated yet (waiting for DOMContentLoaded)
+    // Fire DOMContentLoaded
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+
+    expect(document.querySelector("[data-i18n]").textContent).toBe("Balance");
+
+    // Restore readyState
+    Object.defineProperty(document, "readyState", {
+      value: "complete",
+      writable: true,
+      configurable: true,
     });
   });
 });

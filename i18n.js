@@ -218,3 +218,8 @@ var i18n = (function () {
 
   return { t: t, applyToDOM: applyToDOM, setLang: setLang, getLang: getLang };
 })();
+
+// CommonJS export for testing (no-op in browsers)
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = i18n;
+}
