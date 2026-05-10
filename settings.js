@@ -1,16 +1,21 @@
 // --- Language ---
 const languageSelect = document.getElementById("language-select");
-const savedLang = localStorage.getItem("app-language");
-if (savedLang) {
-  languageSelect.value = savedLang;
-}
+const savedLang = (typeof i18n !== "undefined") ? i18n.getLang() : (localStorage.getItem("app-language") || "en");
+languageSelect.value = savedLang;
+
 languageSelect.addEventListener("change", function () {
-  localStorage.setItem("app-language", this.value);
+  var lang = this.value;
+  if (typeof i18n !== "undefined") {
+    i18n.setLang(lang);
+  } else {
+    localStorage.setItem("app-language", lang);
+  }
 });
 
 // --- Reset App ---
 document.getElementById("btn-reset-app").addEventListener("click", function () {
-  if (!confirm("Are you sure you want to reset the app? This will clear all data.")) {
+  var msg = (typeof i18n !== "undefined") ? i18n.t("settings.confirm_reset") : "Are you sure you want to reset the app? This will clear all data.";
+  if (!confirm(msg)) {
     return;
   }
   // Clear localStorage

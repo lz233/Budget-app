@@ -42,19 +42,19 @@ const COOKIE_CONSENT_KEY = "cookie_consent";
 
 function validateInput(titleRaw, amountRaw) {
   const title = String(titleRaw || "").trim();
-  if (title.length === 0) return { valid: false, message: "Please enter a title." };
-  if (title.length > 50) return { valid: false, message: "Title must be 50 characters or fewer." };
+  if (title.length === 0) return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.empty_title") : "Please enter a title." };
+  if (title.length > 50) return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.title_too_long") : "Title must be 50 characters or fewer." };
 
   if (amountRaw === "" || amountRaw === null) {
-    return { valid: false, message: "Please enter an amount." };
+    return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.empty_amount") : "Please enter an amount." };
   }
 
   const amount = Number(amountRaw);
-  if (!Number.isFinite(amount)) return { valid: false, message: "Amount must be a number." };
-  if (amount < 0.01) return { valid: false, message: "Amount must be greater than zero." };
-  if (amount > 9999999) return { valid: false, message: "Amount is too large." };
+  if (!Number.isFinite(amount)) return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.not_number") : "Amount must be a number." };
+  if (amount < 0.01) return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.too_small") : "Amount must be greater than zero." };
+  if (amount > 9999999) return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.too_large") : "Amount is too large." };
   if (Math.round(amount * 100) / 100 !== amount) {
-    return { valid: false, message: "Use at most 2 decimal places." };
+    return { valid: false, message: typeof i18n !== "undefined" ? i18n.t("validate.too_many_decimals") : "Use at most 2 decimal places." };
   }
 
   return { valid: true, title, amount };
@@ -161,7 +161,7 @@ if (addExpense) {
     ENTRY_LIST.push({ type: "expense", title: result.title, amount: result.amount });
     updateUI();
     clearInput([expenseTitle, expenseAmount]);
-    showToast("Expense added successfully!");
+    showToast(typeof i18n !== "undefined" ? i18n.t("toast.expense_added") : "Expense added successfully!");
   });
 }
 
@@ -175,7 +175,7 @@ if (addIncome) {
     ENTRY_LIST.push({ type: "income", title: result.title, amount: result.amount });
     updateUI();
     clearInput([incomeTitle, incomeAmount]);
-    showToast("Income added successfully!");
+    showToast(typeof i18n !== "undefined" ? i18n.t("toast.income_added") : "Income added successfully!");
   });
 }
 

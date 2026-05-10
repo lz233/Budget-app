@@ -76,14 +76,14 @@
   <body>
     <div class="budget-container" style="background-color: #fff; overflow-y: auto;">
       <div class="app-title" style="margin-bottom: 20px;">
-        <a href="./index.html" style="color: #1a0034;">&larr; Back to <b>App</b></a>
+        <a href="./index.html" style="color: #1a0034;" data-i18n="settings.back">&larr; Back to App</a>
       </div>
       <div style="padding: 0 20px 20px 20px; color: #333; font-family: 'Gilroy', sans-serif; line-height: 1.6; font-size: 0.95rem;">
-        <h2 style="font-family: 'Gilroy Bold', sans-serif; color: #1a0034; text-align: center; margin-bottom: 20px;">Settings</h2>
+        <h2 style="font-family: 'Gilroy Bold', sans-serif; color: #1a0034; text-align: center; margin-bottom: 20px;" data-i18n="settings.title">Settings</h2>
 
         <!-- Language -->
         <div class="settings-section">
-          <label for="language-select">Language</label>
+          <label for="language-select" data-i18n="settings.language">Language</label>
           <select id="language-select">
             <option value="en">English</option>
             <option value="cn">中文</option>
@@ -92,16 +92,17 @@
 
         <!-- Privacy Policy link -->
         <div class="settings-section">
-          <a href="./privacy.html" class="settings-link">Privacy Policy</a>
+          <a href="./privacy.html" class="settings-link" data-i18n="settings.privacy_policy">Privacy Policy</a>
         </div>
 
         <!-- Reset -->
         <div class="settings-section" style="margin-top: 40px;">
-          <button id="btn-reset-app" class="btn-reset">Reset App</button>
+          <button id="btn-reset-app" class="btn-reset" data-i18n="settings.reset_app">Reset App</button>
         </div>
       </div>
     </div>
 
+    <script src="./i18n.js"></script>
     <script src="./settings.js"></script>
   </body>
 </html>
